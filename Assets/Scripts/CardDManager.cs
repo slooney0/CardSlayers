@@ -87,13 +87,19 @@ public class CardDManager : MonoBehaviour
         return card;
     }
 
-    public static void discardCard(int card)
+    public static void discardCard(int idx)
     {
         if (CardDManager.card != 0)
         {
-            discard.Push(card);
+            discard.Push(deck[idx]);
             CardDManager.card = 0;
         }
+    }
+
+    public static void discardSpecifiedCard(int card)
+    {
+        deck.Remove(card);
+        discard.Push(card);
     }
 
     public static void shuffle()
