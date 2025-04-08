@@ -11,21 +11,17 @@ using UnityEngine.UI;
 public class CardDManager : MonoBehaviour
 {
 
-    private static int[] basicCards = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 
-        11 ,12, 13, 14, 15, 16, 17, 18, 19, 20, 
-        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 
-        31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 
-        41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 
-        51, 52 };
+    private static String[] basicCards = { "CA", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C0", "CJ", "CQ", "CK", 
+                                           "DA", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D0", "DJ", "DQ", "DK",
+                                           "SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S0", "SJ", "SQ", "SK",
+                                           "HA", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H0", "HJ", "HQ", "HK"};
     
-    private static bool[] drawnCards = new bool[52];
+    private static Stack<String> discard = new Stack<String>(52);
 
-    private static Stack<int> discard = new Stack<int>(52);
-
-    private static List<int> deck = new List<int>(52);
+    private static List<String> deck = new List<String>(52);
     private static int deckSize = 52;
     private static int randomCardIdx;
-    public static int card;
+    public static String card;
 
     private static int drawnCardsInt;
 
@@ -41,9 +37,9 @@ public class CardDManager : MonoBehaviour
             deck.Add(basicCards[i]);
         }
         discard.Clear();
-        discard.Push(-1);
+        discard.Push("-1");
         drawnCardsInt = 0;
-        card = 0;
+        card = "";
         deckSize = 52;
     }
 
@@ -57,13 +53,13 @@ public class CardDManager : MonoBehaviour
 
         currentCard.text = "Current Card: " + card;
 
-        int[] deckArray = deck.ToArray();
+        String[] deckArray = deck.ToArray();
         currentDeck.text = "Current Deck: ";
         for (int i = 0; i < deckSize; i++)
         {
             currentDeck.text += deckArray[i].ToString() + ", ";
         }
-        if (discard.Peek() >= 0)
+        if (discard.Peek() != "-1")
         {
             discardedCard.text = "Discarded Card: " + discard.Peek();
         }
@@ -73,9 +69,9 @@ public class CardDManager : MonoBehaviour
         }
     }
 
-    public static int drawCard()
+    public static String drawCard()
     {
-        if (card != 0)
+        if (card != "")
         {
             discard.Push(card);
         }
@@ -89,23 +85,24 @@ public class CardDManager : MonoBehaviour
 
     public static void discardCard(int idx)
     {
-        if (CardDManager.card != 0)
+        if (CardDManager.card != "")
         {
             discard.Push(deck[idx]);
-            CardDManager.card = 0;
+            CardDManager.card = "";
         }
     }
 
-    public static void discardSpecifiedCard(int card)
+    public static void discardSpecifiedCard(String card)
     {
         deck.Remove(card);
         discard.Push(card);
+        CardDManager.card = "";
     }
 
     public static void shuffle()
     {
         int shuffledCardCount = 0;
-        while (discard.Peek() != -1)
+        while (discard.Peek() != "-1")
         {
             deck.Add(discard.Pop());
             shuffledCardCount++;

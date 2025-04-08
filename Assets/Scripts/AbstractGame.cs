@@ -5,7 +5,7 @@ public abstract class AbstractGame : MonoBehaviour
 
     private int drawnCards;
     private string gameName;
-    private int[] hand;
+    private string[] hand;
 
     public AbstractGame(int drawnCards, string gameName)
     {
@@ -13,7 +13,7 @@ public abstract class AbstractGame : MonoBehaviour
         this.gameName = gameName;
     }
     
-    public int[] draw()
+    public string[] draw()
     {
         for (int i = hand.Length; i < drawnCards; i++)
         {
@@ -22,7 +22,7 @@ public abstract class AbstractGame : MonoBehaviour
         return hand;
     }
 
-    public int[] draw(int drawnCards)
+    public string[] draw(int drawnCards)
     {
         for (int i = hand.Length; i < drawnCards; i++)
         {
@@ -31,7 +31,7 @@ public abstract class AbstractGame : MonoBehaviour
         return hand;
     }
 
-    public int discard(int card)
+    public string discard(string card)
     {
         for (int i = 0; i < drawnCards; i++)
         {
@@ -45,7 +45,7 @@ public abstract class AbstractGame : MonoBehaviour
                 return card;
             }
         }
-        return -1;
+        return "";
     }
 
     public void discardAll()
@@ -53,7 +53,7 @@ public abstract class AbstractGame : MonoBehaviour
         for (int i = 0; i < hand.Length; i++)
         {
             CardDManager.discardSpecifiedCard(hand[i]);
-            hand[i] = -1;
+            hand[i] = "";
         }
     }
 

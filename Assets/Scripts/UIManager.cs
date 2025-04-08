@@ -29,7 +29,7 @@ public class UIManager : MonoBehaviour
 
     private void discardCard()
     {
-        CardDManager.discardCard(CardDManager.card);
+        CardDManager.discardSpecifiedCard(CardDManager.card);
     }
 
     private void shuffleCard()
