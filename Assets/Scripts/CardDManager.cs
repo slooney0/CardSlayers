@@ -10,18 +10,13 @@ using UnityEngine.UI;
 
 public class CardDManager : MonoBehaviour
 {
-
-    private static String[] basicCards = { "CA", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C0", "CJ", "CQ", "CK", 
-                                           "DA", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D0", "DJ", "DQ", "DK",
-                                           "SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S0", "SJ", "SQ", "SK",
-                                           "HA", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H0", "HJ", "HQ", "HK"};
     
-    private static Stack<String> discard = new Stack<String>(52);
+    private static Card emptyCard = new Card(Card.Suit.Empty, 0);
 
-    private static List<String> deck = new List<String>(52);
-    private static int deckSize = 52;
+    private static CardList discard = new CardList();
+    private static CardList deck = new CardList();
     private static int randomCardIdx;
-    public static String card;
+    public static Card cCard;
 
     private static int drawnCardsInt;
 
@@ -31,37 +26,30 @@ public class CardDManager : MonoBehaviour
 
     void Start()
     {
-        deck.Clear();
-        for (int i = 0; i < basicCards.Length; i++)
-        {
-            deck.Add(basicCards[i]);
-        }
-        discard.Clear();
-        discard.Push("-1");
+        deck.createDeck();
         drawnCardsInt = 0;
-        card = "";
-        deckSize = 52;
     }
 
     
     void Update()
     {
-        if (drawnCardsInt == 52)
+        if (deck.getSize() == 0)
         {
             shuffle();
         }
 
-        currentCard.text = "Current Card: " + card;
+        if (cCard != null)
+        currentCard.text = "Current Card: " + cCard.toString();
 
-        String[] deckArray = deck.ToArray();
         currentDeck.text = "Current Deck: ";
-        for (int i = 0; i < deckSize; i++)
+        for (int i = 0; i < deck.getSize(); i++)
         {
-            currentDeck.text += deckArray[i].ToString() + ", ";
+            if (deck.get(i) != null)
+            currentDeck.text += deck.get(i).toString() + ", ";
         }
-        if (discard.Peek() != "-1")
+        if (discard.getSize() != 0)
         {
-            discardedCard.text = "Discarded Card: " + discard.Peek();
+            discardedCard.text = "Discarded Card: " + discard.get(discard.getSize() - 1).toString();
         }
         else
         {
@@ -69,45 +57,51 @@ public class CardDManager : MonoBehaviour
         }
     }
 
-    public static String drawCard()
+    public static Card drawCard()
     {
-        if (card != "")
+
+        if (cCard != null && !cCard.equals(emptyCard))
         {
-            discard.Push(card);
+            print("discarded");
+            discard.add(cCard);
         }
-        randomCardIdx = UnityEngine.Random.Range(0, deckSize);
+
+        randomCardIdx = UnityEngine.Random.Range(0, deck.getSize());
+
+        print(randomCardIdx);
+
         drawnCardsInt++;
-        card = deck[randomCardIdx];
-        deck.RemoveAt(randomCardIdx);
-        deckSize--;
-        return card;
+        cCard = deck.get(randomCardIdx);
+        deck.remove(randomCardIdx);
+        return cCard;
     }
 
     public static void discardCard(int idx)
     {
-        if (CardDManager.card != "")
+        if (!deck.get(idx).equals(emptyCard))
         {
-            discard.Push(deck[idx]);
-            CardDManager.card = "";
+            discard.add(deck.remove(idx));
         }
     }
 
-    public static void discardSpecifiedCard(String card)
+    public static void discardSpecifiedCard(Card card)
     {
-        deck.Remove(card);
-        discard.Push(card);
-        CardDManager.card = "";
+        if (card != null && !card.equals(emptyCard))
+        {
+            discard.add(card);
+        }
+
+        cCard = emptyCard;
     }
 
     public static void shuffle()
     {
-        int shuffledCardCount = 0;
-        while (discard.Peek() != "-1")
+        while (discard.getSize() != 0)
         {
-            deck.Add(discard.Pop());
-            shuffledCardCount++;
+            print("shuffled");
+
+            deck.add(discard.remove(discard.getSize() - 1));
         }
-        deckSize += shuffledCardCount;
         drawnCardsInt = 0;
     }
 }

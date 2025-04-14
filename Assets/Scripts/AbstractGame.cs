@@ -5,56 +5,41 @@ public abstract class AbstractGame : MonoBehaviour
 
     private int drawnCards;
     private string gameName;
-    private string[] hand;
+    private SortedList hand;
 
     public AbstractGame(int drawnCards, string gameName)
     {
         this.drawnCards = drawnCards;
         this.gameName = gameName;
+        hand = new SortedList(drawnCards * 2);
     }
     
-    public string[] draw()
+    public SortedList drawHand()
     {
-        for (int i = hand.Length; i < drawnCards; i++)
+        for (int i = hand.getSize(); i < drawnCards; i++)
         {
-            hand[i] = CardDManager.drawCard();
+            hand.add(CardDManager.drawCard());
         }
         return hand;
     }
 
-    public string[] draw(int drawnCards)
+    public SortedList draw(int drawnCards)
     {
-        for (int i = hand.Length; i < drawnCards; i++)
+        for (int i = hand.getSize(); i < drawnCards; i++)
         {
-            hand[i] = CardDManager.drawCard();
+            hand.add(CardDManager.drawCard());
         }
         return hand;
     }
 
-    public string discard(string card)
+    public Card discard(Card card)
     {
-        for (int i = 0; i < drawnCards; i++)
-        {
-            if (card == hand[i])
-            {
-                CardDManager.discardSpecifiedCard(card);
-                for (int j = i; j < drawnCards - 1; j++)
-                {
-                    hand[j] = hand[j + 1];
-                }
-                return card;
-            }
-        }
-        return "";
+        return hand.remove(card);
     }
 
     public void discardAll()
     {
-        for (int i = 0; i < hand.Length; i++)
-        {
-            CardDManager.discardSpecifiedCard(hand[i]);
-            hand[i] = "";
-        }
+        hand.discardHand();
     }
 
     public abstract int score();
